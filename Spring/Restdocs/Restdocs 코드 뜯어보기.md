@@ -110,13 +110,11 @@ Restdocs에서는 이런 다양한 API포맷의 공통점을 묶어서 또 한�
 
 이 Descriptor를 이용해서 `Map<String, Object> createModel(Operation operation)` 메서드를 구현한다.
 
-![image](https://github.com/gomudayya/DevelopNote/assets/129571789/46e2b35b-3389-40d9-9b68-da9b8e2395d4)
-
 ```java
 @Override
 	@Override
 	protected Map<String, Object> createModel(Operation operation) {
-    ... API 포맷에 적절한 validation 로직들
+    		// ... API 포맷에 적절한 validation 로직들
 
 		Map<String, Object> model = new HashMap<>();
 		List<Map<String, Object>> fields = new ArrayList<>();
@@ -144,9 +142,9 @@ Restdocs에서는 이런 다양한 API포맷의 공통점을 묶어서 또 한�
 
 **그리고 위에서 미처 언급하지 않았는데, AbstractSnippet 계층에서도, 추상 메서드가 존재하고 템플릿 메소드 패턴이 사용된다.**
 
-이 때는 `createModel()`이 골격을 담은 템플릿 메소드이고, 그 과정에 구체적인 스니펫별로 다르게 가져가야할 부분을 추상메소드로 분류하였다.
+이 때는 `Map<String, Object> createModel(Operation operation)`이 골격을 담은 템플릿 메소드이고,
 
-**따라서 마찬가지로 이 레벨에서도, 위의 추상메서드를 구현하는것이 주요 포인트이다.**
+그 과정에 **구체적인 스니펫별로 다르게 가져가야할 부분을 추상메소드로 분류**하였다.
 
 ## 아니 그래서 커스텀은 어떻게 할건데요..
 
