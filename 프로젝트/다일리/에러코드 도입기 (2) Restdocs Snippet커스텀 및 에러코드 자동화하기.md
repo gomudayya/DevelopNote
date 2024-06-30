@@ -167,10 +167,10 @@ public class AllErrorCodesSnippet extends TemplatedSnippet {
 
 ![image](https://github.com/gomudayya/DevelopNote/assets/129571789/d6db46b0-fe3a-4eb0-a4e9-2c6c7c2432b6)
 
-- 각각의 Enum상수들은 에러타입을 가지고있다.
+- 각각의 Enum상수들은 에러타입(분류), Http 상태코드, 에러메시지, description을 가지고있다.
 
-- 별도의 추가설명이 필요치 않을 때에는 에러메시지로 설명을 대체하지만,
+- 별도의 추가설명이 필요치 않을 때에는 에러메시지로 description을 대체하지만,
 
-  추가 설명이 필요할때에는 description의 설명을 추가로 넣어 API문서에 작성하도록 하였다.
+  추가 설명이 필요할때에는 description의 설명을 넣어 API문서에 작성하도록 하였다.
 
 - **이렇게하면 에러코드 상수를 하나 늘릴때마다, API문서에 자동으로 반영된다 !**
