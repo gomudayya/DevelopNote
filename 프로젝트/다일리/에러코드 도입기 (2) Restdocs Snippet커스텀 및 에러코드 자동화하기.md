@@ -73,12 +73,104 @@ Restdocs는 컨트롤러 계층의 테스트코드가 있어야만 문서화를 
 
 - 컨트롤러 껍데기
 
-![image](https://github.com/gomudayya/DevelopNote/assets/129571789/3885c5df-2652-4b0e-a871-fc77ff91267c)
+  ![image](https://github.com/gomudayya/DevelopNote/assets/129571789/3885c5df-2652-4b0e-a871-fc77ff91267c)
 
 - 테스트코드 껍데기
 
-  - `AllErrorCodesSnippet.buildSnippet()` 에 대한것은 아래에서 설명.
-![image](https://github.com/gomudayya/DevelopNote/assets/129571789/de1b7205-6630-48e5-9ad8-4fcf9c7e9952)
+  ![image](https://github.com/gomudayya/DevelopNote/assets/129571789/de1b7205-6630-48e5-9ad8-4fcf9c7e9952)
 
+  - `AllErrorCodesSnippet.buildSnippet()` : AllErrorCodeSnippet` 클래스를 생성해서 반환합니다.
 
+     해당 클래스에 대한 구체적인 설명은 아래에서
+    
 
+## 커스텀 Snippet 클래스 작성하기
+
+우선 `TemplatedSnippet` 클래스를 상속받는것이 하다.
+
+**그리고 가장 중요한 일인 `Map<String, Object> createModel(Operation operation)` 메서드를 구현해야 한다.**
+
+참고로 별도의 dto를 사용하지 못하고, Map<String, Object>의 형태로 내려줘야하기 때문에 한곳에서 몰아서 작성하면 지저분한 코드가 된다.
+
+속성별로 메서드를 잘 분리해서 구현하는 것이 좋다..
+
+구체적인 설명은 아래 코드의 주석으로 달아놓았다.
+
+```java
+public class AllErrorCodesSnippet extends TemplatedSnippet {
+    public AllErrorCodesSnippet() {
+        /*
+        첫번째 파라미터       : 스니펫 이름을 정의합니다. 이 이름을 토대로, 우리가 만든 경로의 .snippet 파일을 찾아갑니다.
+        두번째 파라미터(null) : Map<String, Object> attributes 라는 상위타입의 멤버변수를 초기화합니다.
+                               restdocs에서는 attributes와 createModel 메서드의 반환결과를 합쳐서 템플릿을 렌더링합니다.
+                               createModel만 잘 구현하면 되서 별도로 정의할 필요는 없습니다.
+        */
+        super("all-error-codes", null); 
+    }
+
+    public static AllErrorCodesSnippet buildSnippet() {
+        return new AllErrorCodesSnippet();
+    }
+
+    @Override
+    /*
+    가장 중요한부분입니다. map의 key값이 이전에 작성했던 snippet 파일의 변수값과 대응됩니다.
+    오히려 타입을 적게되면 복잡해져서 더 헷갈릴 수 있으니, 하위요소들도 Object로 가져가는것이 더 좋습니다.
+    Json자료형을 어떻게 자바의 Map<String, Object>로 표현할수 있을까? 로 접근해보면 한결 헷갈리지 않고 작성할 수 있습니다.
+    */
+    protected Map<String, Object> createModel(Operation operation) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("allErrorCodes", generateAllErrorCodes()); //error-codes.snippet의 {{allErrorCodes}} 에 대응되는 Map 자료형을 만듭니다. 머스타치 문법 참고.
+        return model;
+    }
+
+    /*
+    에러타입을 순회하며, 에러타입과 표에대한 내용을 채웁니다.
+    */
+    private List<Object> generateAllErrorCodes() {
+        List<Object> allErrorCodes = new ArrayList<>();
+
+        for (ErrorType errorType : ErrorType.values()) {
+            Map<String, Object> map = new HashMap<>();
+
+            map.put("errorType", errorType.getDescription());
+            map.put("errorCodes", generateErrorCodes(errorType));
+
+            allErrorCodes.add(map);
+        }
+
+        return allErrorCodes;
+    }
+
+    /*
+    표의 구체적인 내용(code, httpStatus, description)을 채워줍니다. 
+    */
+    private List<Object> generateErrorCodes(ErrorType errorType) {
+        List<Object> errorsByErrorType = new ArrayList<>();
+
+        for (ErrorCode errorCode : ErrorCode.getErrorCodes(errorType)) {
+            Map<String, Object> error = new HashMap<>();
+
+            error.put("code", errorCode.name());
+            error.put("httpStatus", errorCode.getStatusCode());
+            error.put("description", errorCode.getDescription());
+
+            errorsByErrorType.add(error);
+        }
+
+        return errorsByErrorType;
+    }
+}
+```
+
+참고로 ErrorCode의 Enum 은 아래와 같은 형식으로 되어있다.
+
+![image](https://github.com/gomudayya/DevelopNote/assets/129571789/d6db46b0-fe3a-4eb0-a4e9-2c6c7c2432b6)
+
+- 각각의 Enum상수들은 에러타입을 가지고있다.
+
+- 별도의 추가설명이 필요치 않을 때에는 에러메시지로 설명을 대체하지만,
+
+  추가 설명이 필요할때에는 description의 설명을 추가로 넣어 API문서에 작성하도록 하였다.
+
+- **이렇게하면 에러코드 상수를 하나 늘릴때마다, API문서에 자동으로 반영된다 !**
