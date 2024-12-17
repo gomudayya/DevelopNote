@@ -83,14 +83,14 @@ Node.JS만의 독창적인 컨셉을 지켜나가기 원하는 개발자라면 �
 
 ---
 
-주절주절 쓰긴 했는데, Node 계열은 사실 모르는 것이 많아서 쉽사리 적기가 어려웠다. 그래도 스프링에 대해서만 공부해 왔는데, 다른 쪽 진영에 대해 공부해보니 신선하게 다가왔고, 재미있었다.
-
-
-
+주절주절 쓰긴 했는데, Node 계열은 사실 모르는 것이 많아서 쉽사리 적기가 어려웠다. 
+그래도 스프링에 대해서만 공부해 왔는데, 다른 쪽 진영에 대해 공부해보니 신선하게 다가왔고, 재미있었다.
 
 
 ---
+
 참고자료
+
 https://www.quora.com/What-are-the-problems-Spring-framework-solves-over-Java
 https://www.quora.com/Why-should-I-prefer-Spring-Framework-over-Java-EE
 https://www.netguru.com/glossary/node-js#what-is-nodejs-and-why-does-it-matter
